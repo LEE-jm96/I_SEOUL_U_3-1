@@ -1,13 +1,13 @@
 import React from 'react'
-import { Header } from './components/organisms'
+import { Header } from './components/ui/header'
 import { ManagementPage } from './pages/ManagementPage'
 import './styles/components.css'
 
 export const App: React.FC = () => {
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f7fafc' }}>
+    <div className="min-h-screen w-full bg-[#f0f0f0]">
       <Header />
-      <main>
+      <main className="w-full max-w-[1200px] mx-auto p-6">
         <ManagementPage />
       </main>
     </div>
