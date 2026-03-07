@@ -201,7 +201,7 @@ export const ManagementPage: React.FC = () => {
         stat1: { label: '게시됨', value: posts.filter((p) => p.status === 'published').length },
         stat2: { label: '임시저장', value: posts.filter((p) => p.status === 'draft').length },
         stat3: { label: '보관됨', value: posts.filter((p) => p.status === 'archived').length },
-        stat4: { label: '총 조회수', value: posts.reduce((sum, p) => sum + p.views, 0) },
+        stat4: { label: '총 조회수', value: posts.reduce((sum, p) => sum + (p.views ?? 0), 0) },
       };
     }
   };
@@ -224,7 +224,10 @@ export const ManagementPage: React.FC = () => {
     if (entityType === 'post') {
       if (key === 'category') return <Badge variant="secondary">{value}</Badge>;
       if (key === 'status') return <Badge variant="outline">{STATUS_LABELS[value] || value}</Badge>;
-      if (key === 'views') return value?.toLocaleString() || '0';
+      if (key === 'views') {
+        const n = Number(value);
+        return Number.isNaN(n) ? '0' : n.toLocaleString();
+      }
       if (key === 'actions') {
         return (
           <div className="flex gap-2 flex-wrap">
@@ -500,7 +503,7 @@ export const ManagementPage: React.FC = () => {
                 <AlertTitle>정보</AlertTitle>
                 <AlertDescription>
                   ID: {selectedItem.id} | 생성일: {selectedItem.createdAt}
-                  {entityType === 'post' && ` | 조회수: ${(selectedItem as Post).views}`}
+                  {entityType === 'post' && ` | 조회수: ${(selectedItem as Post).views ?? 0}`}
                 </AlertDescription>
               </Alert>
             )}
