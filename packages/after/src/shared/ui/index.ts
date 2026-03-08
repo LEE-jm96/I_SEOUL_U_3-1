@@ -22,3 +22,4 @@ export {
 } from './table';
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card';
 export { Form, FormField, FormItem, FormLabel, FormControl } from './form';
+export { FormFieldGroup } from './form-field-group';

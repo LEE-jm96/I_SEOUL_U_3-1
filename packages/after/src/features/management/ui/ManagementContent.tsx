@@ -18,50 +18,16 @@ import {
   TableRow,
 } from '@/shared/ui/table';
 import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
 import { cn } from '@/shared/lib/utils';
-import { userApi } from '@/entities/user';
-import { postApi } from '@/entities/post';
+import { userApi, ROLE_LABELS, USER_STATUS_LABELS } from '@/entities/user';
+import { postApi, POST_STATUS_LABELS } from '@/entities/post';
 import type { User } from '@/entities/user';
 import type { Post } from '@/entities/post';
+import { FormFieldGroup } from '@/shared/ui';
 
 type EntityType = 'user' | 'post';
 type Entity = User | Post;
-
-const ROLE_LABELS: Record<string, string> = {
-  admin: '관리자',
-  moderator: '운영자',
-  user: '사용자',
-  guest: '게스트',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  active: '활성',
-  inactive: '비활성',
-  suspended: '정지',
-  published: '게시됨',
-  draft: '임시저장',
-  archived: '보관됨',
-};
-
-const FormField = ({
-  label,
-  children,
-  required,
-}: {
-  label: string;
-  children: React.ReactNode;
-  required?: boolean;
-}) => (
-  <div className="space-y-2 mb-4">
-    <Label>
-      {label}
-      {required && <span className="text-destructive ml-1">*</span>}
-    </Label>
-    {children}
-  </div>
-);
 
 export const ManagementContent: React.FC = () => {
   const [entityType, setEntityType] = useState<EntityType>('post');
@@ -238,7 +204,7 @@ export const ManagementContent: React.FC = () => {
     const value = row[key];
     if (entityType === 'user') {
       if (key === 'role') return <Badge variant="secondary">{ROLE_LABELS[String(value)] || String(value)}</Badge>;
-      if (key === 'status') return <Badge variant="outline">{STATUS_LABELS[String(value)] || String(value)}</Badge>;
+      if (key === 'status') return <Badge variant="outline">{USER_STATUS_LABELS[String(value)] || String(value)}</Badge>;
       if (key === 'lastLogin') return (value as string) || '-';
       if (key === 'actions') {
         return (
@@ -251,7 +217,7 @@ export const ManagementContent: React.FC = () => {
     }
     if (entityType === 'post') {
       if (key === 'category') return <Badge variant="secondary">{String(value)}</Badge>;
-      if (key === 'status') return <Badge variant="outline">{STATUS_LABELS[String(value)] || String(value)}</Badge>;
+      if (key === 'status') return <Badge variant="outline">{POST_STATUS_LABELS[String(value)] || String(value)}</Badge>;
       if (key === 'views') {
         const n = Number(value);
         return Number.isNaN(n) ? '0' : n.toLocaleString();
@@ -374,8 +340,8 @@ export const ManagementContent: React.FC = () => {
             </div>
           </div>
 
-          <div className="overflow-auto rounded border border-[#ddd] bg-white">
-            <Table className="[&_th:last-child]:pr-2 [&_td:last-child]:pr-2">
+          <div className="overflow-auto rounded border border-[#ddd] bg-white [scrollbar-gutter:stable]">
+            <Table>
               <TableHeader>
                 <TableRow>
                   {columns.map((col) => (
@@ -404,15 +370,15 @@ export const ManagementContent: React.FC = () => {
             <div className="space-y-4 px-6 py-4">
               {entityType === 'user' ? (
                 <>
-                  <FormField label="사용자명" required>
+                  <FormFieldGroup label="사용자명" required>
                     <Input
                       name="username"
                       value={formData.username || ''}
                       onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                       placeholder="사용자명을 입력하세요"
                     />
-                  </FormField>
-                  <FormField label="이메일" required>
+                  </FormFieldGroup>
+                  <FormFieldGroup label="이메일" required>
                     <Input
                       name="email"
                       type="email"
@@ -420,9 +386,9 @@ export const ManagementContent: React.FC = () => {
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="이메일을 입력하세요"
                     />
-                  </FormField>
+                  </FormFieldGroup>
                   <div className="grid grid-cols-2 gap-4">
-                    <FormField label="역할">
+                    <FormFieldGroup label="역할">
                       <select
                         name="role"
                         value={formData.role || 'user'}
@@ -433,8 +399,8 @@ export const ManagementContent: React.FC = () => {
                         <option value="moderator">운영자</option>
                         <option value="admin">관리자</option>
                       </select>
-                    </FormField>
-                    <FormField label="상태">
+                    </FormFieldGroup>
+                    <FormFieldGroup label="상태">
                       <select
                         name="status"
                         value={formData.status || 'active'}
@@ -445,29 +411,29 @@ export const ManagementContent: React.FC = () => {
                         <option value="inactive">비활성</option>
                         <option value="suspended">정지</option>
                       </select>
-                    </FormField>
+                    </FormFieldGroup>
                   </div>
                 </>
               ) : (
                 <>
-                  <FormField label="제목" required>
+                  <FormFieldGroup label="제목" required>
                     <Input
                       name="title"
                       value={formData.title || ''}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       placeholder="게시글 제목을 입력하세요"
                     />
-                  </FormField>
+                  </FormFieldGroup>
                   <div className="grid grid-cols-2 gap-4">
-                    <FormField label="작성자" required>
+                    <FormFieldGroup label="작성자" required>
                       <Input
                         name="author"
                         value={formData.author || ''}
                         onChange={(e) => setFormData({ ...formData, author: e.target.value })}
                         placeholder="작성자명"
                       />
-                    </FormField>
-                    <FormField label="카테고리">
+                    </FormFieldGroup>
+                    <FormFieldGroup label="카테고리">
                       <select
                         name="category"
                         value={formData.category || ''}
@@ -479,16 +445,16 @@ export const ManagementContent: React.FC = () => {
                         <option value="design">Design</option>
                         <option value="accessibility">Accessibility</option>
                       </select>
-                    </FormField>
+                    </FormFieldGroup>
                   </div>
-                  <FormField label="내용">
+                  <FormFieldGroup label="내용">
                     <Textarea
                       value={formData.content || ''}
                       onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                       placeholder="게시글 내용을 입력하세요"
                       rows={6}
                     />
-                  </FormField>
+                  </FormFieldGroup>
                 </>
               )}
             </div>
@@ -518,15 +484,15 @@ export const ManagementContent: React.FC = () => {
               )}
               {entityType === 'user' ? (
                 <>
-                  <FormField label="사용자명" required>
+                  <FormFieldGroup label="사용자명" required>
                     <Input
                       name="username"
                       value={formData.username || ''}
                       onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                       placeholder="사용자명을 입력하세요"
                     />
-                  </FormField>
-                  <FormField label="이메일" required>
+                  </FormFieldGroup>
+                  <FormFieldGroup label="이메일" required>
                     <Input
                       name="email"
                       type="email"
@@ -534,9 +500,9 @@ export const ManagementContent: React.FC = () => {
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="이메일을 입력하세요"
                     />
-                  </FormField>
+                  </FormFieldGroup>
                   <div className="grid grid-cols-2 gap-4">
-                    <FormField label="역할">
+                    <FormFieldGroup label="역할">
                       <select
                         name="role"
                         value={formData.role || 'user'}
@@ -547,8 +513,8 @@ export const ManagementContent: React.FC = () => {
                         <option value="moderator">운영자</option>
                         <option value="admin">관리자</option>
                       </select>
-                    </FormField>
-                    <FormField label="상태">
+                    </FormFieldGroup>
+                    <FormFieldGroup label="상태">
                       <select
                         name="status"
                         value={formData.status || 'active'}
@@ -559,29 +525,29 @@ export const ManagementContent: React.FC = () => {
                         <option value="inactive">비활성</option>
                         <option value="suspended">정지</option>
                       </select>
-                    </FormField>
+                    </FormFieldGroup>
                   </div>
                 </>
               ) : (
                 <>
-                  <FormField label="제목" required>
+                  <FormFieldGroup label="제목" required>
                     <Input
                       name="title"
                       value={formData.title || ''}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       placeholder="게시글 제목을 입력하세요"
                     />
-                  </FormField>
+                  </FormFieldGroup>
                   <div className="grid grid-cols-2 gap-4">
-                    <FormField label="작성자" required>
+                    <FormFieldGroup label="작성자" required>
                       <Input
                         name="author"
                         value={formData.author || ''}
                         onChange={(e) => setFormData({ ...formData, author: e.target.value })}
                         placeholder="작성자명"
                       />
-                    </FormField>
-                    <FormField label="카테고리">
+                    </FormFieldGroup>
+                    <FormFieldGroup label="카테고리">
                       <select
                         name="category"
                         value={formData.category || ''}
@@ -596,16 +562,16 @@ export const ManagementContent: React.FC = () => {
                         <option value="design">Design</option>
                         <option value="accessibility">Accessibility</option>
                       </select>
-                    </FormField>
+                    </FormFieldGroup>
                   </div>
-                  <FormField label="내용">
+                  <FormFieldGroup label="내용">
                     <Textarea
                       value={formData.content || ''}
                       onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                       placeholder="게시글 내용을 입력하세요"
                       rows={6}
                     />
-                  </FormField>
+                  </FormFieldGroup>
                 </>
               )}
             </div>
