@@ -305,8 +305,8 @@ export const ManagementContent: React.FC = () => {
     <div className="w-full">
       <div className="max-w-[1200px] mx-auto p-5">
         <div className="mb-5">
-          <h1 className="text-2xl font-bold text-[#333] leading-snug">관리 시스템</h1>
-          <p className="mt-1 text-sm text-[#666] leading-relaxed">사용자와 게시글을 관리하세요</p>
+          <h1 className="text-2xl font-bold text-foreground leading-snug">관리 시스템</h1>
+          <p className="mt-1 text-sm text-muted-foreground leading-relaxed">사용자와 게시글을 관리하세요</p>
         </div>
 
         <div className="rounded border border-[#ddd] bg-white p-5 shadow-sm">
