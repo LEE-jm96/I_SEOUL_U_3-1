@@ -374,7 +374,7 @@ export const ManagementContent: React.FC = () => {
             </div>
           </div>
 
-          <div className="overflow-auto rounded border border-[#ddd] bg-white">
+          <div className="overflow-auto rounded border border-[#ddd] bg-white [scrollbar-gutter:stable]">
             <Table>
               <TableHeader>
                 <TableRow>
